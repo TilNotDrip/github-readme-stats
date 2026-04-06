@@ -1,0 +1,21 @@
+services:
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: github-readme-stats
+    restart: unless-stopped
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: github-readme-stats-tunnel
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    depends_on:
+      - runner
+    command: tunnel run
+
+networks:
+  default:
+    name: github-readme-stats
